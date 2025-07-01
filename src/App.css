@@ -1,38 +1,103 @@
-.App {
+/* App.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fafafa;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+  padding: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h1 {
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.buttons {
+  margin: 20px 0;
+}
+
+button {
+  background-color: #f84e0a;
+  color: #222;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ffbf00;
+}
+
+.status {
+  font-size: 18px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 80px);
+  grid-template-rows: repeat(6, 80px);
+  gap: 10px;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.square {
+  width: 80px;
+  height: 80px;
+  background-color: #eee;
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.square:hover {
+  transform: scale(1.05);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.tile-covered {
+  font-size: 28px;
+  font-weight: bold;
+  color: #888;
+}
+
+.music-controls {
+  margin-bottom: 15px;
+}
+
+.music-controls button {
+  background-color: #85e085;
+  color: #222;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.music-controls button:hover {
+  background-color: #5cd65c;
 }
