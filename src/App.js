@@ -6,18 +6,25 @@ const chickenImg = 'https://thumbs.dreamstime.com/z/full-body-brown-chicken-hen-
 
 const GRID_SIZE = 6;
 const TILE_COUNT = GRID_SIZE * GRID_SIZE;
+const CHICKEN_COUNT = TILE_COUNT / 2;
+const BANANA_COUNT = TILE_COUNT / 2;
 
-function getRandomTileType() {
-  return Math.random() < 0.5 ? 'banana' : 'chicken';
+function generateBalancedTiles() {
+  const tiles = Array(CHICKEN_COUNT).fill('chicken').concat(Array(BANANA_COUNT).fill('banana'));
+  for (let i = tiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
+  return tiles;
 }
 
 function App() {
-  const [tiles, setTiles] = useState(Array(TILE_COUNT).fill(null));
+  const [tiles, setTiles] = useState(generateBalancedTiles());
   const [revealed, setRevealed] = useState(Array(TILE_COUNT).fill(false));
   const [playerChoice, setPlayerChoice] = useState(null);
   const [mistake, setMistake] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
+  const [score, setScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
@@ -39,44 +46,42 @@ function App() {
   const handleClick = (index) => {
     if (gameOver || revealed[index] || playerChoice === null) return;
 
-    const tileType = getRandomTileType();
-    const newTiles = [...tiles];
+    const clickedTile = tiles[index];
     const newRevealed = [...revealed];
-
-    newTiles[index] = tileType;
     newRevealed[index] = true;
-
-    setTiles(newTiles);
     setRevealed(newRevealed);
 
-    if (tileType !== playerChoice) {
+    if (clickedTile === playerChoice) {
+      const newScore = score + 1;
+      setScore(newScore);
+
+      if (newScore === TILE_COUNT / 2) {
+        setGameOver(true);
+        setRevealed(Array(TILE_COUNT).fill(true)); // reveal all
+      }
+    } else {
       setMistake(true);
       setGameOver(true);
-    } else {
-      const newCorrectCount = correctCount + 1;
-      setCorrectCount(newCorrectCount);
-      if (newCorrectCount === TILE_COUNT / 2) {
-        setGameOver(true);
-      }
+      setRevealed(Array(TILE_COUNT).fill(true)); // reveal all
     }
   };
 
   const handleRestart = () => {
-    setTiles(Array(TILE_COUNT).fill(null));
+    setTiles(generateBalancedTiles());
     setRevealed(Array(TILE_COUNT).fill(false));
     setPlayerChoice(null);
     setMistake(false);
     setGameOver(false);
-    setCorrectCount(0);
+    setScore(0);
   };
 
   const getStatusMessage = () => {
     if (!playerChoice) return 'Choose your side to start: Banana or Chicken';
     if (gameOver) {
-      if (mistake) return 'Oops! You clicked the wrong one. You lost!';
-      return 'Congratulations! You revealed all correctly and won!';
+      if (mistake) return `Oops! You clicked the wrong one. You lost with ${score} correct clicks.`;
+      return `🎉 You win! All ${score}/18 tiles were correct.`;
     }
-    return `Click all the ${playerChoice}s without making a mistake! (${correctCount}/18)`;
+    return `Click all ${playerChoice}s without mistake (${score}/18 correct)`;
   };
 
   return (
@@ -112,7 +117,7 @@ function App() {
                 className="tile-img"
               />
             ) : (
-              <div className="tile-covered">?</div>
+              <div className="tile-covered">{index + 1}</div>
             )}
           </div>
         ))}
